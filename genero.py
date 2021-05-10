@@ -4,5 +4,5 @@ class Genero:
         self.nome = nome
         self.filmes = []
 
-    def inserir_filmes(self, filme):
+    def inserir_filme(self, filme):
         self.filmes.append(filme)
