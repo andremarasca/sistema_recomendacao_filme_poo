@@ -1,7 +1,10 @@
 class Filme:
-    def __init__(self, nome: str, data_lancamento: str) -> None:
-        self.nome = nome
-        self.data_lancamento = data_lancamento
+    def __init__(self, movie_id, movie_title, release_date, video_release_date, IMDb_URL) -> None:
+        self.movie_id = movie_id
+        self.movie_title = movie_title
+        self.release_date = release_date
+        self.video_release_date = video_release_date
+        self.IMDb_URL = IMDb_URL
         self.generos = []
         self.avaliacoes = []
 

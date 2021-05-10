@@ -2,11 +2,12 @@ from metricas_similaridade import DistanciaCosseno
 
 
 class Usuario:
-    def __init__(self, identificador: int, idade: int, ocupacao: str, zip: int) -> None:
-        self.identificador = identificador
-        self.idade = idade
-        self.ocupacao = ocupacao
-        self.zip = zip
+    def __init__(self, user_id: str, age: int, gender: str, occupation, zip_code: str) -> None:
+        self.user_id = user_id
+        self.age = age
+        self.gender = gender
+        self.occupation = occupation
+        self.zip_code = zip_code
         self.avaliacoes = []
 
     def inserir_avaliacao(self, avaliacao):
