@@ -30,15 +30,15 @@ class SistemaRecomendacaoItemBased(SistemaRecomendacao):
 
     def knn(self, n_neighbors, target_movie_id, target_user_id):
 
-        target_matrix = self.select_target_instances(target_movie_id)
-        target_user = self.select_user_target(target_user_id).tolist()
+        target_matrix = self.select_target_instances(target_user_id)
+        target_movie = self.select_movie_target(target_movie_id).tolist()
 
         list_similaridade = []
 
-        for user_id in target_matrix:
-            curr_user = target_matrix[user_id].tolist()
-            similaridade = ms.calcula_distancia(target_user, curr_user)
-            list_similaridade.append((similaridade, user_id))
+        for movie_id, curr_movie in target_matrix.iterrows():
+            curr_movie = curr_movie.tolist()
+            similaridade = ms.calcula_distancia(target_movie, curr_movie)
+            list_similaridade.append((similaridade, movie_id))
 
         list_similaridade.sort(reverse=True)
 
@@ -49,16 +49,16 @@ class SistemaRecomendacaoItemBased(SistemaRecomendacao):
 
         knn = self.knn(n_neighbors, target_movie_id, target_user_id)
 
-        usuarios = self.usuarios
+        filmes = self.filmes
 
         soma = 0
         soma_peso = 0
 
         for i in knn:
             similaridade = i[0]
-            user_id = i[1]
-            user: Usuario = usuarios[user_id]
-            rating = user.avaliacoes[target_movie_id].rating
+            movie_id = i[1]
+            movie: Filme = filmes[movie_id]
+            rating = movie.avaliacoes[target_user_id].rating
 
             soma += similaridade*rating
             soma_peso += similaridade
