@@ -23,11 +23,6 @@ class SistemaRecomendacaoItemBased(SistemaRecomendacao):
     def select_movie_target(self, target_movie_id):
         return self.rating_matrix.loc[target_movie_id, :]
 
-# %% Coisa antiga apagar depois de terminar
-
-    def select_user_target(self, target_user_id):
-        return self.rating_matrix[target_user_id]
-
     def knn(self, n_neighbors, target_movie_id, target_user_id):
 
         target_matrix = self.select_target_instances(target_user_id)
