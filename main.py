@@ -9,18 +9,27 @@ from read_dataset import read_dataset
 import pandas as pd
 from metricas_similaridade import DistanciaCosseno as ms
 
+# %%
+
 srib = SistemaRecomendacaoItemBased(
     "ml-100k/u.user", "ml-100k/u.genre", "ml-100k/u.item", "ml-100k/u.data")
 
+n_neighbors = 3
+target_movie_id = "1"
+target_user_id = "3"
+
+target_matrix = srib.select_target_instances(target_user_id)
+target_movie = srib.select_movie_target(target_movie_id)
+
 # %% Estimar o rating que o usuario alvo daria para o filme alvo se ele assistisse esse filme
 
-srub = SistemaRecomendacaoUserBased(
-    "ml-100k/u.user", "ml-100k/u.genre", "ml-100k/u.item", "ml-100k/u.data")
+# srub = SistemaRecomendacaoUserBased(
+#     "ml-100k/u.user", "ml-100k/u.genre", "ml-100k/u.item", "ml-100k/u.data")
 
-rating = srub.estimate_target_rating(
-    n_neighbors=3, target_movie_id="1", target_user_id="3")
+# rating = srub.estimate_target_rating(
+#     n_neighbors=3, target_movie_id="1", target_user_id="3")
 
-print(rating)
+# print(rating)
 
 # %% Testes de acesso
 

@@ -13,14 +13,17 @@ class SistemaRecomendacaoItemBased(SistemaRecomendacao):
     def __init__(self, user_filename, genre_filename, item_filename, data_filename) -> None:
         super().__init__(user_filename, genre_filename, item_filename, data_filename)
 
-    def select_target_instances(self, target_movie_id):
+    def select_target_instances(self, target_user_id):
+        """ Construir lista de filmes que o usuário alvo já assistiu """
+        user: Usuario = self.usuarios[target_user_id]
+        target_movies = list(user.avaliacoes.keys())
+        target_matrix = self.rating_matrix.loc[target_movies, :]
+        return target_matrix
 
-        # self.filmes[target_movie_id] o obj filme de target_movie_id
-        # self.filmes[target_movie_id].avaliacoes é um dict e a chave é o user_id
-        target_users = self.filmes[target_movie_id].avaliacoes.keys()
+    def select_movie_target(self, target_movie_id):
+        return self.rating_matrix.loc[target_movie_id, :]
 
-        # o primeiro indice do pandas são as colunas, pode-se passar uma lista para filtrar
-        return self.rating_matrix[target_users]
+# %% Coisa antiga apagar depois de terminar
 
     def select_user_target(self, target_user_id):
         return self.rating_matrix[target_user_id]
