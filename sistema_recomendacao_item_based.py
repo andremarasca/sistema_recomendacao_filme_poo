@@ -13,29 +13,32 @@ class SistemaRecomendacaoItemBased(SistemaRecomendacao):
     def __init__(self, user_filename, genre_filename, item_filename, data_filename) -> None:
         super().__init__(user_filename, genre_filename, item_filename, data_filename)
 
-    def select_target_instances(self, target_movie_id):
+    def select_target_instances(self, target_user_id):
+        """ Construir lista de filmes que o usuário alvo já assistiu """
+        user: Usuario = self.usuarios[target_user_id]
+        target_movies = list(user.avaliacoes.keys())
+        target_matrix = self.rating_matrix.loc[target_movies, :]
+        return target_matrix
 
-        # self.filmes[target_movie_id] o obj filme de target_movie_id
-        # self.filmes[target_movie_id].avaliacoes é um dict e a chave é o user_id
-        target_users = self.filmes[target_movie_id].avaliacoes.keys()
+    def select_movie_target(self, target_movie_id):
+        return self.rating_matrix.loc[target_movie_id, :]
 
-        # o primeiro indice do pandas são as colunas, pode-se passar uma lista para filtrar
-        return self.rating_matrix[target_users]
+# %% Coisa antiga apagar depois de terminar
 
     def select_user_target(self, target_user_id):
         return self.rating_matrix[target_user_id]
 
     def knn(self, n_neighbors, target_movie_id, target_user_id):
 
-        target_matrix = self.select_target_instances(target_movie_id)
-        target_user = self.select_user_target(target_user_id).tolist()
+        target_matrix = self.select_target_instances(target_user_id)
+        target_movie = self.select_movie_target(target_movie_id).tolist()
 
         list_similaridade = []
 
-        for user_id in target_matrix:
-            curr_user = target_matrix[user_id].tolist()
-            similaridade = ms.calcula_distancia(target_user, curr_user)
-            list_similaridade.append((similaridade, user_id))
+        for movie_id, curr_movie in target_matrix.iterrows():
+            curr_movie = curr_movie.tolist()
+            similaridade = ms.calcula_distancia(target_movie, curr_movie)
+            list_similaridade.append((similaridade, movie_id))
 
         list_similaridade.sort(reverse=True)
 
@@ -46,16 +49,16 @@ class SistemaRecomendacaoItemBased(SistemaRecomendacao):
 
         knn = self.knn(n_neighbors, target_movie_id, target_user_id)
 
-        usuarios = self.usuarios
+        filmes = self.filmes
 
         soma = 0
         soma_peso = 0
 
         for i in knn:
             similaridade = i[0]
-            user_id = i[1]
-            user: Usuario = usuarios[user_id]
-            rating = user.avaliacoes[target_movie_id].rating
+            movie_id = i[1]
+            movie: Filme = filmes[movie_id]
+            rating = movie.avaliacoes[target_user_id].rating
 
             soma += similaridade*rating
             soma_peso += similaridade

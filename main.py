@@ -9,9 +9,17 @@ from read_dataset import read_dataset
 import pandas as pd
 from metricas_similaridade import DistanciaCosseno as ms
 
+print("="*50)
+# %%
+
 srib = SistemaRecomendacaoItemBased(
     "ml-100k/u.user", "ml-100k/u.genre", "ml-100k/u.item", "ml-100k/u.data")
 
+rating = srib.estimate_target_rating(
+    n_neighbors=3, target_movie_id="1", target_user_id="3")
+
+print("Rating Item-Based:", rating)
+print("="*50)
 # %% Estimar o rating que o usuario alvo daria para o filme alvo se ele assistisse esse filme
 
 srub = SistemaRecomendacaoUserBased(
@@ -20,62 +28,83 @@ srub = SistemaRecomendacaoUserBased(
 rating = srub.estimate_target_rating(
     n_neighbors=3, target_movie_id="1", target_user_id="3")
 
-print(rating)
-
+print("Rating User-Based:", rating)
+print("="*50)
 # %% Testes de acesso
 
-# # Acessar a primeira avaliação a lista do usuário 100, mostrar o movie_id e o rating
+# Imprimir 5 avaliações do usuário 100.
 
-# user_id = "100"
-# user = srub.usuarios[user_id]
-# aval = user.avaliacoes[0]
-# rating = aval.rating
-# movie_id = aval.filme.movie_id
+user_id = "100"
+user: Usuario = srub.usuarios[user_id]
 
-# print(f"Usuario {user_id} avaliou o filme {movie_id} com nota {rating}")
+i = 0
+for movie_id in user.avaliacoes:
+    avaliacao: Avaliacao = user.avaliacoes[movie_id]
+    rating = avaliacao.rating
+    filme: Filme = avaliacao.filme
+    movie_title = filme.movie_title
+    print(
+        f"Usuario {user_id} avaliou com nota {rating} o filme '{movie_title}'")
+    i += 1
+    if i == 5:
+        break
 
-# # Descobrir os generos do filme 123
+print("="*50)
 
-# movie_id = "123"
-# movie = srub.filmes[movie_id]
-# generos = movie.generos
-# for genero in generos:
-#     print(f"Filme {movie_id} tem genero {genero.nome}")
+# Descobrir os generos do filme 123
 
-# # Descobrir o id de todos os programadores
+movie_id = "123"
+movie = srub.filmes[movie_id]
+generos = movie.generos
+for genero in generos:
+    print(f"Filme {movie_id} tem genero {genero.nome}")
 
-# ocupacao_programador = srub.ocupacoes["programmer"]
-# programadores = ocupacao_programador.usuarios
-# print("ID dos programadores:", *map(lambda x: x.user_id, programadores))
+print("="*50)
 
-# # Descobrir movie_id de todos os filmes de terror
+# Descobrir o id de todos os programadores
 
-# horror = srub.generos["Horror"]
-# print("ID dos filmes de Horror:", *map(lambda x: x.movie_id, horror.filmes))
+ocupacao_programador = srub.ocupacoes["programmer"]
+programadores = ocupacao_programador.usuarios  # dicionario
+print("ID dos programadores:", list(programadores.keys()))
 
-# # Listar o nome dos filmes que são de Horror e ação
+print("="*50)
 
-# action = srub.generos["Action"].filmes
-# horror = srub.generos["Horror"].filmes
+# Descobrir movie_id de todos os filmes de terror
 
+horror = srub.generos["Horror"]
+print("ID dos filmes de Horror:", list(horror.filmes.keys()))
 
-# def intersection(lst1, lst2):
-#     lst3 = [value for value in lst1 if value in lst2]
-#     return lst3
+print("="*50)
 
+# Listar o nome dos filmes que são de Horror e ação
 
-# action_horror = intersection(action, horror)
+action = srub.generos["Action"].filmes
+horror = srub.generos["Horror"].filmes
 
-# for filme in action_horror:
-#     print("Filme de Acao e Horror:", filme.movie_title)
+for movie_id in action:
+    if movie_id in horror:
+        print("Filme de Acao e Horror:", action[movie_id].movie_title)
 
-# # Mostrar todas as avaliações do usuário 1, mostrar o movie_id e o rating
+print("="*50)
 
-# user_id = "1"
-# user = srub.usuarios[user_id]
+# Imprimir rating médio do usuario 100
 
-# for aval in user.avaliacoes:
-#     rating = aval.rating
-#     movie_id = aval.filme.movie_id
+print("Rating medio do user 100:", srub.usuarios["100"].rating_medio())
+print("="*50)
 
-#     print(f"Usuario {user_id} avaliou o filme {movie_id} com nota {rating}")
+# Imprimir rating médio do filme 100
+
+print("Rating medio do filme 100:", srub.filmes["100"].rating_medio())
+print("="*50)
+
+# Imprimir rating médio do genero Horror
+
+print("Rating medio do genero horror:", srub.generos["Horror"].rating_medio())
+print("="*50)
+
+# Imprimir rating médio da ocupação programador
+
+ocupacao_programador = srub.ocupacoes["programmer"]
+print("Rating medio da ocupacao programador:",
+      ocupacao_programador.rating_medio())
+print("="*50)
