@@ -9,7 +9,7 @@ from sistema_recomendacao import SistemaRecomendacao
 from metricas_similaridade import DistanciaCosseno as ms
 
 
-class SistemaRecomendacaoUserBased(SistemaRecomendacao):
+class SistemaRecomendacaoItemBased(SistemaRecomendacao):
     def __init__(self, user_filename, genre_filename, item_filename, data_filename) -> None:
         super().__init__(user_filename, genre_filename, item_filename, data_filename)
 

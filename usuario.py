@@ -8,10 +8,10 @@ class Usuario:
         self.gender = gender
         self.occupation = occupation
         self.zip_code = zip_code
-        self.avaliacoes = []
+        self.avaliacoes = {}
 
     def inserir_avaliacao(self, avaliacao):
-        self.avaliacoes.append(avaliacao)
+        self.avaliacoes[avaliacao.filme.movie_id] = avaliacao
 
     def classificar_filme(self, filme, nota: float):
         pass

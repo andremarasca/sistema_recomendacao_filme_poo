@@ -3,19 +3,21 @@ from abc import ABC, abstractmethod
 
 class AlgoritmoDistancia(ABC):
     @abstractmethod
-    def calcula_distancia(self, item1, item2):
+    def calcula_distancia(cls, item1, item2):
         pass
 
 
 class DistanciaCosseno(AlgoritmoDistancia):
-    def dot_product(self, a: list = [], b: list = []) -> float:
+    @classmethod
+    def dot_product(cls, a: list = [], b: list = []) -> float:
         dot = 0
         length = len(a)
         for i in range(length):
             dot += a[i]*b[i]
         return dot
 
-    def norm_l2(self, a: list = []) -> float:
+    @classmethod
+    def norm_l2(cls, a: list = []) -> float:
         norm = 0
         length = len(a)
         for i in range(length):
@@ -23,10 +25,11 @@ class DistanciaCosseno(AlgoritmoDistancia):
 
         return (norm)**0.5
 
-    def cos_similarity(self, a: list = [], b: list = []) -> float:
-        dot = self.dot_product(a, b)
-        normA = self.norm_l2(a)
-        normB = self.norm_l2(b)
+    @classmethod
+    def cos_similarity(cls, a: list = [], b: list = []) -> float:
+        dot = cls.dot_product(a, b)
+        normA = cls.norm_l2(a)
+        normB = cls.norm_l2(b)
 
         return dot / (normA * normB)
 
@@ -36,17 +39,18 @@ class DistanciaCosseno(AlgoritmoDistancia):
 
 
 class CorrelacaoDePearson(AlgoritmoDistancia):
-
-    def average(self, x: list = []) -> float:
+    @classmethod
+    def average(cls, x: list = []) -> float:
         assert len(x) > 0
         return float(sum(x)) / len(x)
 
-    def pearson_def(self, x: list = [], y: list = []) -> float:
+    @classmethod
+    def pearson_def(cls, x: list = [], y: list = []) -> float:
         assert len(x) == len(y)
         n = len(x)
         assert n > 0
-        avg_x = self.average(x)
-        avg_y = self.average(y)
+        avg_x = cls.average(x)
+        avg_y = cls.average(y)
         diffprod = 0
         xdiff2 = 0
         ydiff2 = 0

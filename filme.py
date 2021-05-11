@@ -6,10 +6,10 @@ class Filme:
         self.video_release_date = video_release_date
         self.IMDb_URL = IMDb_URL
         self.generos = []
-        self.avaliacoes = []
+        self.avaliacoes = {}
 
     def inserir_avaliacao(self, avaliacao):
-        self.avaliacoes.append(avaliacao)
+        self.avaliacoes[avaliacao.usuario.user_id] = avaliacao
 
     def inserir_genero(self, genero):
         self.generos.append(genero)
