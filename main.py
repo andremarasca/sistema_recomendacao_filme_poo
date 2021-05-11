@@ -1,4 +1,5 @@
 from sistema_recomendacao_user_based import SistemaRecomendacaoUserBased
+from sistema_recomendacao_item_based import SistemaRecomendacaoItemBased
 from genero import Genero
 from occupation import Occupation
 from usuario import Usuario
@@ -6,9 +7,22 @@ from filme import Filme
 from avaliacao import Avaliacao
 from read_dataset import read_dataset
 import pandas as pd
+from metricas_similaridade import DistanciaCosseno as ms
+
+srib = SistemaRecomendacaoItemBased(
+    "ml-100k/u.user", "ml-100k/u.genre", "ml-100k/u.item", "ml-100k/u.data")
+
+# %% Estimar o rating que o usuario alvo daria para o filme alvo se ele assistisse esse filme
 
 srub = SistemaRecomendacaoUserBased(
     "ml-100k/u.user", "ml-100k/u.genre", "ml-100k/u.item", "ml-100k/u.data")
+
+rating = srub.estimate_target_rating(
+    n_neighbors=3, target_movie_id="1", target_user_id="3")
+
+print(rating)
+
+# %% Testes de acesso
 
 # # Acessar a primeira avaliação a lista do usuário 100, mostrar o movie_id e o rating
 
@@ -65,8 +79,3 @@ srub = SistemaRecomendacaoUserBased(
 #     movie_id = aval.filme.movie_id
 
 #     print(f"Usuario {user_id} avaliou o filme {movie_id} com nota {rating}")
-
-# %%
-
-target_matrix = srub.select_target_instances("1")
-target_user = srub.select_user_target("1")
