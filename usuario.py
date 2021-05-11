@@ -13,6 +13,14 @@ class Usuario:
     def inserir_avaliacao(self, avaliacao):
         self.avaliacoes[avaliacao.filme.movie_id] = avaliacao
 
+    def rating_medio(self):
+        soma = 0
+        qtd = 0
+        for movie_id in self.avaliacoes:
+            soma += self.avaliacoes[movie_id].rating
+            qtd += 1
+        return soma / qtd
+
     def classificar_filme(self, filme, nota: float):
         pass
 

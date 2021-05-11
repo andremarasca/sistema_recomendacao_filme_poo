@@ -86,3 +86,25 @@ for movie_id in action:
         print("Filme de Acao e Horror:", action[movie_id].movie_title)
 
 print("="*50)
+
+# Imprimir rating médio do usuario 100
+
+print("Rating medio do user 100:", srub.usuarios["100"].rating_medio())
+print("="*50)
+
+# Imprimir rating médio do filme 100
+
+print("Rating medio do filme 100:", srub.filmes["100"].rating_medio())
+print("="*50)
+
+# Imprimir rating médio do genero Horror
+
+print("Rating medio do genero horror:", srub.generos["Horror"].rating_medio())
+print("="*50)
+
+# Imprimir rating médio da ocupação programador
+
+ocupacao_programador = srub.ocupacoes["programmer"]
+print("Rating medio da ocupacao programador:",
+      ocupacao_programador.rating_medio())
+print("="*50)
