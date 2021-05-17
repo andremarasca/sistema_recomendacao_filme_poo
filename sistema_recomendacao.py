@@ -1,3 +1,4 @@
+from typing import Dict
 from genero import Genero
 from occupation import Occupation
 from usuario import Usuario
@@ -5,9 +6,11 @@ from filme import Filme
 from avaliacao import Avaliacao
 from read_dataset import read_dataset
 import pandas as pd
+import numpy as np
+from estatistica import Estatistica
 
 
-class SistemaRecomendacao:
+class SistemaRecomendacao(Estatistica):
     def __init__(self, user_filename, genre_filename, item_filename, data_filename) -> None:
         self.usuarios = {}
         self.filmes = {}
@@ -123,3 +126,76 @@ class SistemaRecomendacao:
                     rating_matrix_dict[user_id][movie_id] = 0
 
         self.rating_matrix = pd.DataFrame.from_dict(rating_matrix_dict)
+
+    def as_array(self):
+        filmes: dict = self.filmes
+        list_rating = []
+        for movie_id in filmes:
+            filme: Filme = filmes[movie_id]
+            avaliacoes: dict = filme.avaliacoes
+            for user_id in avaliacoes:
+                avaliacao: Avaliacao = avaliacoes[user_id]
+                list_rating.append(avaliacao.rating)
+        return np.array(list_rating)
+
+    def buscar_usuarios_uniformes(self):
+        list_uniformes = []
+        estatistica_sr: Dict = self.dados_estatisticos()
+        media_sr = estatistica_sr["mean"]
+        desvio_st = estatistica_sr["std"]
+        limite_inferior = media_sr - desvio_st
+        limite_superior = media_sr + desvio_st
+        usuarios: Dict = self.usuarios
+        for user_id in usuarios:
+            usuario: Usuario = usuarios[user_id]
+            estatistica_user = usuario.dados_estatisticos()
+            media_user = estatistica_user["mean"]
+            if limite_inferior < media_user < limite_superior:
+                list_uniformes.append(user_id)
+
+        return list_uniformes
+
+    def buscar_usuarios_distantes_da_media_em_unidades_de_desvio(self, unidades_de_desvio: float = 1, acima: bool = True):
+        """ Calcula os usuarios que estao distantes da media em unidades de desvio padrao
+
+        Args:
+            unidades_de_desvio (float): Fator para multiplicar o desvio padrão no calculo
+            acima (bool): Verificar se o usuario está acima, ou abaixo da media
+
+        Return:
+            list_uniformes (list): Lista de id de usuarios
+        """
+        list_uniformes = []
+        estatistica_sr: Dict = self.dados_estatisticos()
+        media_sr = estatistica_sr["mean"]
+        desvio_st = estatistica_sr["std"]
+        limite_superior = media_sr + desvio_st * unidades_de_desvio
+        limite_inferior = media_sr - desvio_st * unidades_de_desvio
+        def pergunta_acima(media_user): return media_user > limite_superior
+        def pergunta_abaixo(media_user): return limite_inferior < media_user
+        if acima:
+            pergunta = pergunta_acima
+        else:
+            pergunta = pergunta_abaixo
+        usuarios: Dict = self.usuarios
+        for user_id in usuarios:
+            usuario: Usuario = usuarios[user_id]
+            estatistica_user = usuario.dados_estatisticos()
+            media_user = estatistica_user["mean"]
+            if pergunta(media_user):
+                list_uniformes.append(user_id)
+
+        return list_uniformes
+
+    def ordenar_usuarios_por_variancia(self):
+        """ Gera uma lista de tuplas (variancia, user_id) """
+        list_usuarios = []
+        usuarios: Dict = self.usuarios
+        for user_id in usuarios:
+            usuario: Usuario = usuarios[user_id]
+            estatistica_user = usuario.dados_estatisticos()
+            list_usuarios.append((estatistica_user["var"], user_id))
+
+        list_usuarios.sort(reverse=True)
+
+        return list_usuarios

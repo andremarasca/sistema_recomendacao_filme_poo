@@ -108,3 +108,38 @@ ocupacao_programador = srub.ocupacoes["programmer"]
 print("Rating medio da ocupacao programador:",
       ocupacao_programador.rating_medio())
 print("="*50)
+
+#%% NUMPY
+
+# Imprimir dados estatisticos de todas as avaliações
+
+print("Rating global:", srib.dados_estatisticos())
+print("="*50)
+
+# Imprimir dados estatisticos do usuario 100
+
+print("Rating do user 100:", srib.usuarios["100"].dados_estatisticos())
+print("="*50)
+
+# Imprimir id dos usuarios mais uniformes
+
+print("Usuarios Uniformes (5 deles):", srib.buscar_usuarios_uniformes()[0:5])
+print("="*50)
+
+# Imprimir Usuarios com maior variancia
+
+print("Usuarios com maior variancia (5 maiores):", srib.ordenar_usuarios_por_variancia()[0:5])
+print("="*50)
+
+# Imprimir acima da media
+
+print("Usuarios com media acima de uma unidade de desvio:", srib.buscar_usuarios_distantes_da_media_em_unidades_de_desvio()[0:5])
+print("="*50)
+
+# Imprimir abaixo da media
+
+print("Usuarios com media abaixo de uma unidade de desvio:", srib.buscar_usuarios_distantes_da_media_em_unidades_de_desvio(unidades_de_desvio = 1, acima = False)[0:5])
+print("="*50)
+
+#%% 
+
